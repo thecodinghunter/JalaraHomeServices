@@ -150,32 +150,23 @@ function VendorRegistrationForm() {
   
   const onFormSubmit = async (data: FieldValues) => {
     setServerError({ message: null, errors: {} });
-<<<<<<< HEAD
-        const result = await registerVendor(null, data);
-        if (result?.errors || result?.message) {
-            setServerError({ message: result.message, errors: result.errors });
-        } else {
-            // Send verification email after successful registration
-            try {
-                const { getAuth, sendEmailVerification } = await import('firebase/auth');
-                const { app } = await import('@/firebase');
-                const auth = getAuth(app);
-                if (auth.currentUser && !auth.currentUser.emailVerified) {
-                    await sendEmailVerification(auth.currentUser);
-                }
-            } catch (e) {
-                // Ignore if unable to send verification
-            }
-            router.push('/verify-email');
-        }
-=======
     const result = await registerVendor(null, data);
     if (result?.errors || result?.message) {
-      setServerError({ message: result.message, errors: result.errors });
+        setServerError({ message: result.message, errors: result.errors });
     } else {
-        router.push('/');
+        // Send verification email after successful registration
+        try {
+            const { getAuth, sendEmailVerification } = await import('firebase/auth');
+            const { app } = await import('@/firebase');
+            const auth = getAuth(app);
+            if (auth.currentUser && !auth.currentUser.emailVerified) {
+                await sendEmailVerification(auth.currentUser);
+            }
+        } catch (e) {
+            // Ignore if unable to send verification
+        }
+        router.push('/verify-email');
     }
->>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
   };
 
   const handleNext = async () => {
