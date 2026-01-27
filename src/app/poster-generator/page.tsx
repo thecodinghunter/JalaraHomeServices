@@ -83,7 +83,7 @@ const PosterTemplate1 = ({ name, category, phone, services, image }: { name: str
             <p className="text-3xl font-semibold text-accent mt-2 flex items-center justify-center gap-3">
                 <Phone className="w-6 h-6"/> {phone}
             </p>
-            <p className="text-xs text-zinc-500 mt-4">jalaramhomeservice.in</p>
+            <p className="text-xs text-zinc-500 mt-4">jalaramhomeservices.in</p>
         </div>
     </div>
 );
@@ -115,7 +115,7 @@ const PosterTemplate2 = ({ name, category, phone, services, image }: { name: str
             <p className="font-bold text-3xl text-accent mt-1">{phone}</p>
             <div className='flex justify-center items-center gap-2 mt-2'>
               <Image src="/logo.png" width={20} height={20} alt="Jalaram Home Service Logo" />
-              <p className="text-xs text-slate-400 opacity-70">jalaramhomeservice.in</p>
+              <p className="text-xs text-slate-400 opacity-70">jalaramhomeservices.in</p>
             </div>
         </div>
     </div>
@@ -165,7 +165,7 @@ const PosterTemplate3 = ({ name, category, phone, services, image }: { name: str
     <div className="absolute z-20 text-white bottom-6 left-6">
         <p className="font-semibold uppercase">Get a Free Quote</p>
         <p className="font-bold text-lg">{phone}</p>
-        <p className="text-xs opacity-70 mt-2">jalaramhomeservice.in</p>
+        <p className="text-xs opacity-70 mt-2">jalaramhomeservices.in</p>
     </div>
   </div>
 );
@@ -193,7 +193,7 @@ const PosterTemplate4 = ({ name, category, phone, services, image }: { name: str
 
          <div className="mt-auto text-center bg-primary-foreground text-primary rounded-md p-4">
             <p className="text-xl font-bold text-accent">{phone}</p>
-            <p className="text-xs mt-1 opacity-80">jalaramhomeservice.in</p>
+            <p className="text-xs mt-1 opacity-80">jalaramhomeservices.in</p>
         </div>
     </div>
 );
