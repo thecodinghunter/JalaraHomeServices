@@ -149,7 +149,42 @@ export default function LandingPage() {
                 <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 border-none h-10 w-10" />
                 <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 border-none h-10 w-10" />
             </Carousel>
-        </section>
+
+                {/* SEO Content Section */}
+                <section className="py-12 md:py-16 bg-white border-b">
+                    <div className="container max-w-3xl mx-auto px-4">
+                        <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">Best Home Services in Bhuj – Jalaram Home Services</h1>
+                        <p className="mb-6 text-lg text-gray-700">
+                            Welcome to Jalaram Home Services, your trusted partner for all home service needs in Bhuj and nearby areas. We connect you with skilled professionals for plumbing, electrical, cleaning, appliance repair, pest control, construction, and more. Our mission is to make your life easier by providing reliable, on-demand services at your doorstep.
+                        </p>
+                        <h2 className="text-2xl font-semibold mt-8 mb-4">Our Services</h2>
+                        <p className="mb-4 text-gray-700">
+                            We offer a wide range of services including home cleaning, appliance repair, pest control, renovation, and maintenance. Whether you need a quick fix or a major project, our verified experts are ready to help. <Link href="/request-service" className="text-primary underline">Book a Service</Link> today!
+                        </p>
+                        <h2 className="text-2xl font-semibold mt-8 mb-4">Why Choose Us</h2>
+                        <ul className="list-disc pl-6 mb-4 text-gray-700">
+                            <li>Trusted and background-checked professionals</li>
+                            <li>Fast response and easy online booking</li>
+                            <li>Transparent pricing and no hidden charges</li>
+                            <li>Serving Bhuj, Anjar, Gandhidham, Mundra, Mandvi, Rapar, Nakhatrana, and more</li>
+                        </ul>
+                        <h2 className="text-2xl font-semibold mt-8 mb-4">Areas We Serve</h2>
+                        <p className="mb-4 text-gray-700">
+                            Our services are available across Kutchh, including Bhuj, Anjar, Gandhidham, Mundra, Mandvi, Rapar, and Nakhatrana. We are expanding to more locations soon!
+                        </p>
+                        <h2 className="text-2xl font-semibold mt-8 mb-4">Contact Us</h2>
+                        <p className="mb-4 text-gray-700">
+                            Have questions or need help? <Link href="/contact" className="text-primary underline">Contact our team</Link> or <Link href="/about" className="text-primary underline">learn more about us</Link>.
+                        </p>
+                        <div className="flex flex-wrap gap-4 mt-6">
+                            <Link href="/about" className="text-primary underline">About Us</Link>
+                            <Link href="/contact" className="text-primary underline">Contact</Link>
+                            <Link href="/request-service" className="text-primary underline">Book a Service</Link>
+                            <Link href="/register" className="text-primary underline">Register</Link>
+                            <Link href="/login" className="text-primary underline">Login</Link>
+                        </div>
+                    </div>
+                </section>
 
         {/* How It Works Section */}
         <section id="how-it-works" className="py-20 md:py-24 bg-muted/50">
