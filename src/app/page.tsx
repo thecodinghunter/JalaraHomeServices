@@ -22,9 +22,9 @@ const findImage = (hint: string) => {
 
 const heroSlides = [
     {
-        title: "Reliable Home Services, On-Demand",
+        title: "Reliable Home Services in Bhuj & Kutchh",
         subtitle: "ભરોસાપાત્ર હોમ સર્વિસ, તમારી માંગ પર",
-        description: "From plumbing to pest control, get trusted professionals at your doorstep. Fast, efficient, and available across Kutchh.",
+        description: "From plumbing, electrician, cleaning, and appliance repair to pest control and construction, get trusted professionals for all home services in Bhuj and Kutchh. Book a home service provider in Bhuj for your household needs. Fast, efficient, and available across Kutchh.",
         imageHint: "home repair",
         primaryCta: {
             text: "Book a Service",
@@ -36,9 +36,9 @@ const heroSlides = [
         }
     },
     {
-        title: "Professional Cleaning Services",
+        title: "Professional Cleaning Services in Bhuj",
         subtitle: "પ્રોફેશનલ સફાઈ સેવાઓ",
-        description: "Get your home or office sparkling clean with our professional cleaning services. Hassle-free booking.",
+        description: "Get your home or office sparkling clean with our cleaning services in Bhuj. Hassle-free booking for home cleaning, office cleaning, and more. Trusted local cleaning service provider in Bhuj.",
         imageHint: "cleaning supplies",
         primaryCta: {
             text: "Book Cleaning",
@@ -50,9 +50,9 @@ const heroSlides = [
         }
     },
     {
-        title: "Expert Appliance Repair",
+        title: "Expert Appliance Repair in Bhuj",
         subtitle: "નિષ્ણાત એપ્લાયન્સ રિપેર",
-        description: "Fast and reliable repairs for your AC, fridge, washing machine, and more. Certified technicians.",
+        description: "Fast and reliable AC repair, fridge repair, and washing machine repair in Bhuj. Certified technicians for all appliance services. Appliance repair in Bhuj and Kutchh for every brand.",
         imageHint: "home appliances",
         primaryCta: {
             text: "Repair an Appliance",
@@ -64,9 +64,9 @@ const heroSlides = [
         }
     },
     {
-        title: "Quality Construction & Renovation",
+        title: "Construction & Renovation Services in Bhuj",
         subtitle: "ગુણવત્તાયુક્ત બાંધકામ અને નવીનીકરણ",
-        description: "Building your dreams or renovating your space? Find skilled professionals for construction and repair jobs.",
+        description: "Building your dreams or renovating your space? Find skilled professionals for construction services, home renovation, and repair services in Bhuj. Quality construction and repair services in Bhuj and Kutchh.",
         imageHint: "construction tools",
         primaryCta: {
             text: "Request a Quote",
@@ -191,10 +191,10 @@ export default function LandingPage() {
         <section id="services" className="py-20 md:py-24">
           <div className="container">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold">Our Services</h2>
-              <p className="max-w-xl mx-auto text-muted-foreground mt-4">
-                Explore a wide range of services to keep your home running smoothly.
-              </p>
+                            <h2 className="text-3xl md:text-4xl font-bold">Our Home Services in Bhuj</h2>
+                            <p className="max-w-xl mx-auto text-muted-foreground mt-4">
+                                Explore a wide range of home services in Bhuj: plumbing, electrician, cleaning, appliance repair, pest control, construction, and more. Book trusted home service providers in Bhuj and Kutchh for your household needs.
+                            </p>
             </div>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {serviceCategories.slice(0, 8).map((category) => (
@@ -203,7 +203,7 @@ export default function LandingPage() {
                     <div className="relative h-48 w-full">
                       <Image
                         src={findImage(category.imageHint)}
-                        alt={category.name}
+                        alt={category.name + ' in Bhuj'}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         data-ai-hint={category.imageHint}
