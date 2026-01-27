@@ -21,78 +21,62 @@ const findImage = (hint: string) => {
 }
 
 const heroSlides = [
-  {
-    title: "Reliable Home Services, On-Demand",
-    subtitle: "ભરોસાપાત્ર હોમ સર્વિસ, તમારી માંગ પર",
-    description: "From plumbing to pest control, get trusted professionals at your doorstep. Fast, efficient, and available across Kutchh.",
-    imageHint: "home repair",
-    primaryCta: {
-      text: "Book a Service",
-<<<<<<< HEAD
-      href: "/login",
-=======
-      href: "/request-service",
->>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
+    {
+        title: "Reliable Home Services, On-Demand",
+        subtitle: "ભરોસાપાત્ર હોમ સર્વિસ, તમારી માંગ પર",
+        description: "From plumbing to pest control, get trusted professionals at your doorstep. Fast, efficient, and available across Kutchh.",
+        imageHint: "home repair",
+        primaryCta: {
+            text: "Book a Service",
+            href: "/request-service",
+        },
+        secondaryCta: {
+            text: "Become a Vendor",
+            href: "/register/vendor",
+        }
     },
-    secondaryCta: {
-        text: "Become a Vendor",
-        href: "/register/vendor",
-    }
-  },
-  {
-    title: "Professional Cleaning Services",
-    subtitle: "પ્રોફેશનલ સફાઈ સેવાઓ",
-    description: "Get your home or office sparkling clean with our professional cleaning services. Hassle-free booking.",
-    imageHint: "cleaning supplies",
-    primaryCta: {
-      text: "Book Cleaning",
-<<<<<<< HEAD
-      href: "/login",
-=======
-      href: "/request-service/cleaning-services",
->>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
+    {
+        title: "Professional Cleaning Services",
+        subtitle: "પ્રોફેશનલ સફાઈ સેવાઓ",
+        description: "Get your home or office sparkling clean with our professional cleaning services. Hassle-free booking.",
+        imageHint: "cleaning supplies",
+        primaryCta: {
+            text: "Book Cleaning",
+            href: "/request-service/cleaning-services",
+        },
+        secondaryCta: {
+            text: "Become a Vendor",
+            href: "/register/vendor",
+        }
     },
-     secondaryCta: {
-        text: "Become a Vendor",
-        href: "/register/vendor",
-    }
-  },
-  {
-    title: "Expert Appliance Repair",
-    subtitle: "નિષ્ણાત એપ્લાયન્સ રિપેર",
-    description: "Fast and reliable repairs for your AC, fridge, washing machine, and more. Certified technicians.",
-    imageHint: "home appliances",
-     primaryCta: {
-      text: "Repair an Appliance",
-<<<<<<< HEAD
-      href: "/login",
-=======
-      href: "/request-service/appliance-services",
->>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
+    {
+        title: "Expert Appliance Repair",
+        subtitle: "નિષ્ણાત એપ્લાયન્સ રિપેર",
+        description: "Fast and reliable repairs for your AC, fridge, washing machine, and more. Certified technicians.",
+        imageHint: "home appliances",
+        primaryCta: {
+            text: "Repair an Appliance",
+            href: "/request-service/appliance-services",
+        },
+        secondaryCta: {
+            text: "Become a Vendor",
+            href: "/register/vendor",
+        }
     },
-     secondaryCta: {
-        text: "Become a Vendor",
-        href: "/register/vendor",
+    {
+        title: "Quality Construction & Renovation",
+        subtitle: "ગુણવત્તાયુક્ત બાંધકામ અને નવીનીકરણ",
+        description: "Building your dreams or renovating your space? Find skilled professionals for construction and repair jobs.",
+        imageHint: "construction tools",
+        primaryCta: {
+            text: "Request a Quote",
+            href: "/request-service/construction-repair",
+        },
+        secondaryCta: {
+            text: "Become a Vendor",
+            href: "/register/vendor",
+        }
     }
-  },
-  {
-    title: "Quality Construction & Renovation",
-    subtitle: "ગુણવત્તાયુક્ત બાંધકામ અને નવીનીકરણ",
-    description: "Building your dreams or renovating your space? Find skilled professionals for construction and repair jobs.",
-    imageHint: "construction tools",
-     primaryCta: {
-      text: "Request a Quote",
-<<<<<<< HEAD
-      href: "/login",
-=======
-      href: "/request-service/construction-repair",
->>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
-    },
-     secondaryCta: {
-        text: "Become a Vendor",
-        href: "/register/vendor",
-    }
-  }
 ];
 
 
@@ -237,11 +221,7 @@ export default function LandingPage() {
               ))}
             </div>
              <div className="text-center mt-12">
-<<<<<<< HEAD
-                <Link href="/login">
-=======
                 <Link href="/request-service">
->>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
                     <Button variant="outline">
                         View All Services <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
