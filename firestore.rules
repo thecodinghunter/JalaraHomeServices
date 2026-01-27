@@ -1,0 +1,27 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId} {
+      // Unauthenticated users can create their own account (for registration)
+      allow create: if request.auth == null;
+      // Logged-in users can read their own profile
+      // Admins can read any profile
+      allow read: if isOwner(userId) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      // Users can only update their own profile
+      allow update: if isOwner(userId);
+    }
+
+    // Allow logged-in users to read and create job requests
+    match /jobRequests/{jobRequestId} {
+      allow read, create: if request.auth != null;
+      // Allow user to update/delete their own job requests
+      allow update, delete: if request.auth != null && resource.data.customerId == request.auth.uid;
+    }
+  }
+}

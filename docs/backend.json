@@ -1,0 +1,285 @@
+
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's profile in the system.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The user's unique ID from Firebase Authentication."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "The user's phone number."
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "admin",
+            "vendor",
+            "customer"
+          ],
+          "description": "The user's role in the system."
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "role"
+      ]
+    },
+    "VendorProfile": {
+      "title": "Vendor Profile",
+      "description": "Represents a vendor's detailed profile.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "vendor"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "approved",
+            "suspended"
+          ],
+          "description": "The approval status of the vendor."
+        },
+        "serviceCategory": {
+          "type": "string"
+        },
+        "subCategories": {
+          "type": "object"
+        },
+        "experience": {
+          "type": "string"
+        },
+        "area": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": "number"
+        },
+        "longitude": {
+          "type": "number"
+        },
+        "serviceRadius": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "pricingType": {
+          "type": "string",
+          "enum": [
+            "fixed",
+            "hourly"
+          ]
+        },
+        "basePrice": {
+          "type": "string"
+        },
+        "visitingCharge": {
+          "type": "string"
+        },
+        "idProofType": {
+          "type": "string"
+        },
+        "idProofNumber": {
+          "type": "string"
+        },
+        "accountHolderName": {
+          "type": "string"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "ifscCode": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "displayName",
+        "phoneNumber",
+        "role",
+        "status",
+        "serviceCategory",
+        "experience",
+        "area",
+        "fullAddress",
+        "latitude",
+        "longitude",
+        "serviceRadius",
+        "pricingType",
+        "basePrice",
+        "idProofType",
+        "idProofNumber",
+        "accountHolderName",
+        "bankName",
+        "accountNumber",
+        "ifscCode"
+      ]
+    },
+    "JobRequest": {
+      "title": "Job Request",
+      "description": "Represents a service request made by a customer.",
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "description": "The ID of the customer who made the request."
+        },
+        "vendorId": {
+          "type": "string",
+          "description": "The ID of the vendor assigned to the job."
+        },
+        "serviceCategory": {
+          "type": "string",
+          "description": "The category of the requested service."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the job."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "assigned",
+            "in-progress",
+            "completed",
+            "cancelled"
+          ],
+          "description": "The current status of the job request."
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "latitude": {
+              "type": "number"
+            },
+            "longitude": {
+              "type": "number"
+            }
+          },
+          "description": "The geographical location of the job."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the job request was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the job request was last updated."
+        },
+        "name": {
+          "type": "string",
+          "description": "Customer's full name for the job request."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Customer's phone number for the job request."
+        },
+        "pincode": {
+          "type": "string",
+          "description": "Pincode of the job location."
+        },
+        "locality": {
+          "type": "string",
+          "description": "Locality of the job location."
+        },
+        "address": {
+          "type": "string",
+          "description": "Detailed address (area and street) for the job."
+        },
+        "city": {
+          "type": "string",
+          "description": "City of the job location."
+        },
+        "state": {
+          "type": "string",
+          "description": "State of the job location."
+        },
+        "landmark": {
+          "type": "string",
+          "description": "Optional landmark for the address."
+        },
+        "alternatePhone": {
+          "type": "string",
+          "description": "Optional alternate phone number."
+        }
+      },
+      "required": [
+        "customerId",
+        "serviceCategory",
+        "description",
+        "status",
+        "location",
+        "createdAt",
+        "name",
+        "phone",
+        "pincode",
+        "locality",
+        "address",
+        "city",
+        "state"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password"
+    ]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Stores public information for each user, which could be a customer or a vendor with basic details."
+    },
+    "/jobRequests/{jobRequestId}": {
+      "schema": {
+        "$ref": "#/entities/JobRequest"
+      },
+      "description": "Stores all job requests from customers."
+    }
+  }
+}

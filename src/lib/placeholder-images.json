@@ -1,0 +1,58 @@
+{
+  "placeholderImages": [
+    {
+      "id": "home-services-hero",
+      "description": "A placeholder image for home services.",
+      "imageUrl": "https://images.unsplash.com/photo-1599619585752-c3edb42a414c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxob21lJTIwcmVwYWlyfGVufDB8fHx8MTc2NTk3MDA4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "home repair"
+    },
+    {
+      "id": "cleaning-services-hero",
+      "description": "A placeholder image for cleaning services.",
+      "imageUrl": "https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjbGVhbmluZyUyMHN1cHBsaWVzfGVufDB8fHx8MTc2NTk2Njk2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cleaning supplies"
+    },
+    {
+      "id": "appliance-services-hero",
+      "description": "A placeholder image for appliance repair services.",
+      "imageUrl": "https://images.unsplash.com/photo-1597418048367-7dd01e4404ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxob21lJTIwYXBwbGlhbmNlc3xlbnwwfHx8fDE3NjU5NzAwODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "home appliances"
+    },
+    {
+      "id": "construction-repair-hero",
+      "description": "A placeholder image for construction and repair services.",
+      "imageUrl": "https://images.unsplash.com/photo-1426927308491-6380b6a9936f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb25zdHJ1Y3Rpb24lMjB0b29sc3xlbnwwfHx8fDE3NjU5MDE5MzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "construction tools"
+    },
+    {
+      "id": "outdoor-utility-hero",
+      "description": "A placeholder image for outdoor and utility services.",
+      "imageUrl": "https://images.unsplash.com/photo-1573561368183-fd88bdb4503d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxnYXJkZW5pbmclMjB0b29sc3xlbnwwfHx8fDE3NjU4OTQyMDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gardening tools"
+    },
+    {
+      "id": "vehicle-services-hero",
+      "description": "A placeholder image for vehicle services.",
+      "imageUrl": "https://images.unsplash.com/photo-1608248086047-12d70e2cd870?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYXIlMjB3aGVlbHxlbnwwfHx8fDE3NjU5NTA5NTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car wheel"
+    },
+    {
+      "id": "personal-services-hero",
+      "description": "A placeholder image for personal services.",
+      "imageUrl": "https://images.unsplash.com/photo-1758887260983-c171388cf56f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzYWxvbiUyMHNjaXNzb3JzfGVufDB8fHx8MTc2NTk3MDA4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salon scissors"
+    },
+    {
+      "id": "event-services-hero",
+      "description": "A placeholder image for event and occasion services.",
+      "imageUrl": "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxldmVudCUyMGRlY29yYXRpb258ZW58MHx8fHwxNzY1OTcwMDgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "event decoration"
+    },
+    {
+      "id": "tools-background",
+      "description": "A background image of various tools.",
+      "imageUrl": "https://images.unsplash.com/photo-1517823382942-3e3579854b23?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0b29scyUyMGZsYXQlMjBsYXl8ZW58MHx8fHwxNzY2NTcyMjM3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tools background"
+    }
+  ]
+}
