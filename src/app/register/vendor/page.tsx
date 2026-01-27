@@ -152,20 +152,9 @@ function VendorRegistrationForm() {
     setServerError({ message: null, errors: {} });
     const result = await registerVendor(null, data);
     if (result?.errors || result?.message) {
-        setServerError({ message: result.message, errors: result.errors });
+      setServerError({ message: result.message, errors: result.errors });
     } else {
-        // Send verification email after successful registration
-        try {
-            const { getAuth, sendEmailVerification } = await import('firebase/auth');
-            const { app } = await import('@/firebase');
-            const auth = getAuth(app);
-            if (auth.currentUser && !auth.currentUser.emailVerified) {
-                await sendEmailVerification(auth.currentUser);
-            }
-        } catch (e) {
-            // Ignore if unable to send verification
-        }
-        router.push('/verify-email');
+        router.push('/');
     }
   };
 

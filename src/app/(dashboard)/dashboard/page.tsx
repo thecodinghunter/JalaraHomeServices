@@ -20,14 +20,12 @@ export default function DashboardRedirectPage() {
     return doc(firestore, 'users', user.uid);
   }, [user, firestore]);
 
+  const { data: userProfile, loading: profileLoading } = useDoc<UserProfile>(userProfileRef);
 
   useEffect(() => {
     if (!userLoading && !user) {
       // If not loading and no user, redirect to login
       router.push('/login');
-    } else if (!userLoading && user && !user.emailVerified) {
-      // If user exists but email not verified, redirect
-      router.push('/verify-email');
     }
   }, [user, userLoading, router]);
 
