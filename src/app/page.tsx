@@ -28,7 +28,11 @@ const heroSlides = [
     imageHint: "home repair",
     primaryCta: {
       text: "Book a Service",
+<<<<<<< HEAD
       href: "/login",
+=======
+      href: "/request-service",
+>>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
     },
     secondaryCta: {
         text: "Become a Vendor",
@@ -42,7 +46,11 @@ const heroSlides = [
     imageHint: "cleaning supplies",
     primaryCta: {
       text: "Book Cleaning",
+<<<<<<< HEAD
       href: "/login",
+=======
+      href: "/request-service/cleaning-services",
+>>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
     },
      secondaryCta: {
         text: "Become a Vendor",
@@ -56,7 +64,11 @@ const heroSlides = [
     imageHint: "home appliances",
      primaryCta: {
       text: "Repair an Appliance",
+<<<<<<< HEAD
       href: "/login",
+=======
+      href: "/request-service/appliance-services",
+>>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
     },
      secondaryCta: {
         text: "Become a Vendor",
@@ -70,7 +82,11 @@ const heroSlides = [
     imageHint: "construction tools",
      primaryCta: {
       text: "Request a Quote",
+<<<<<<< HEAD
       href: "/login",
+=======
+      href: "/request-service/construction-repair",
+>>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
     },
      secondaryCta: {
         text: "Become a Vendor",
@@ -221,7 +237,11 @@ export default function LandingPage() {
               ))}
             </div>
              <div className="text-center mt-12">
+<<<<<<< HEAD
                 <Link href="/login">
+=======
+                <Link href="/request-service">
+>>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
                     <Button variant="outline">
                         View All Services <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>

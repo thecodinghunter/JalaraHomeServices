@@ -150,6 +150,7 @@ function VendorRegistrationForm() {
   
   const onFormSubmit = async (data: FieldValues) => {
     setServerError({ message: null, errors: {} });
+<<<<<<< HEAD
         const result = await registerVendor(null, data);
         if (result?.errors || result?.message) {
             setServerError({ message: result.message, errors: result.errors });
@@ -167,6 +168,14 @@ function VendorRegistrationForm() {
             }
             router.push('/verify-email');
         }
+=======
+    const result = await registerVendor(null, data);
+    if (result?.errors || result?.message) {
+      setServerError({ message: result.message, errors: result.errors });
+    } else {
+        router.push('/');
+    }
+>>>>>>> 87877740f500cea66e6bce094d1948d1c269229a
   };
 
   const handleNext = async () => {
