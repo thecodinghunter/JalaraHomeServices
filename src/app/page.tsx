@@ -86,69 +86,70 @@ export default function LandingPage() {
     );
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <PublicHeader />
 
-      <main className="flex-1">
-        {/* Hero Slider Section */}
-        <section className="relative w-full">
-            <Carousel 
-                className="w-full" 
-                opts={{ loop: true }}
-                plugins={[plugin.current]}
-                onMouseEnter={plugin.current.stop}
-                onMouseLeave={plugin.current.reset}
-            >
-                <CarouselContent>
-                    {heroSlides.map((slide, index) => (
-                        <CarouselItem key={index}>
-                            <div className="relative h-[60vh] md:h-[80vh] w-full">
-                                <Image
-                                    src={findImage(slide.imageHint)}
-                                    alt={slide.title}
-                                    fill
-                                    className="object-cover"
-                                    data-ai-hint={slide.imageHint}
-                                    priority={index === 0}
-                                />
-                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                    <div className="container text-center text-white">
-                                        <div className="bg-white/10 backdrop-blur-sm text-white inline-block rounded-full px-4 py-2 text-sm font-semibold mb-4">
-                                            Your One-Stop Solution for Home Needs
-                                            <span className="block text-xs mt-1 text-white/80">ઘરની જરૂરિયાતો માટે તમારું વન-સ્ટોપ સોલ્યુશન</span>
-                                        </div>
-                                        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 drop-shadow-md">
-                                            {slide.title}
-                                        </h1>
-                                        {slide.subtitle && (
-                                            <h2 className="text-2xl md:text-3xl font-semibold text-accent mb-6 drop-shadow">
-                                                {slide.subtitle}
-                                            </h2>
-                                        )}
-                                        <p className="max-w-2xl mx-auto text-lg text-white/90 mb-10 drop-shadow">
-                                            {slide.description}
-                                        </p>
-                                        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                                            <Link href={slide.primaryCta.href}>
-                                                <Button size="lg" className="w-full sm:w-auto transition-transform hover:scale-105 bg-primary hover:bg-primary/90 text-primary-foreground">
-                                                    {slide.primaryCta.text} <ArrowRight className="ml-2 h-5 w-5" />
-                                                </Button>
-                                            </Link>
-                                            <Link href={slide.secondaryCta.href}>
-                                                <Button size="lg" variant="outline" className="w-full sm:w-auto transition-transform hover:scale-105 bg-transparent border-white text-white hover:bg-white hover:text-primary">
-                                                    {slide.secondaryCta.text}
-                                                </Button>
-                                            </Link>
+        <div className="flex flex-col min-h-screen bg-background">
+            <PublicHeader />
+            <main className="flex-1">
+                {/* Hero Slider Section */}
+                <section className="relative w-full">
+                    <Carousel 
+                        className="w-full" 
+                        opts={{ loop: true }}
+                        plugins={[plugin.current]}
+                        onMouseEnter={plugin.current.stop}
+                        onMouseLeave={plugin.current.reset}
+                    >
+                        <CarouselContent>
+                            {heroSlides.map((slide, index) => (
+                                <CarouselItem key={index}>
+                                    <div className="relative h-[60vh] md:h-[80vh] w-full">
+                                        <Image
+                                            src={findImage(slide.imageHint)}
+                                            alt={slide.title}
+                                            fill
+                                            className="object-cover"
+                                            data-ai-hint={slide.imageHint}
+                                            priority={index === 0}
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                            <div className="container text-center text-white">
+                                                <div className="bg-white/10 backdrop-blur-sm text-white inline-block rounded-full px-4 py-2 text-sm font-semibold mb-4">
+                                                    Your One-Stop Solution for Home Needs
+                                                    <span className="block text-xs mt-1 text-white/80">ઘરની જરૂરિયાતો માટે તમારું વન-સ્ટોપ સોલ્યુશન</span>
+                                                </div>
+                                                <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 drop-shadow-md">
+                                                    {slide.title}
+                                                </h1>
+                                                {slide.subtitle && (
+                                                    <h2 className="text-2xl md:text-3xl font-semibold text-accent mb-6 drop-shadow">
+                                                        {slide.subtitle}
+                                                    </h2>
+                                                )}
+                                                <p className="max-w-2xl mx-auto text-lg text-white/90 mb-10 drop-shadow">
+                                                    {slide.description}
+                                                </p>
+                                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                                                    <Link href={slide.primaryCta.href}>
+                                                        <Button size="lg" className="w-full sm:w-auto transition-transform hover:scale-105 bg-primary hover:bg-primary/90 text-primary-foreground">
+                                                            {slide.primaryCta.text} <ArrowRight className="ml-2 h-5 w-5" />
+                                                        </Button>
+                                                    </Link>
+                                                    <Link href={slide.secondaryCta.href}>
+                                                        <Button size="lg" variant="outline" className="w-full sm:w-auto transition-transform hover:scale-105 bg-transparent border-white text-white hover:bg-white hover:text-primary">
+                                                            {slide.secondaryCta.text}
+                                                        </Button>
+                                                    </Link>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 border-none h-10 w-10" />
-                <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 border-none h-10 w-10" />
-            </Carousel>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 border-none h-10 w-10" />
+                        <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 border-none h-10 w-10" />
+                    </Carousel>
+                </section>
 
                 {/* SEO Content Section */}
                 <section className="py-12 md:py-16 bg-white border-b">
