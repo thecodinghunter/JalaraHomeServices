@@ -8,8 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Mail, KeyRound } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { useFirebase } from '@/firebase';
+import { getSupabaseBrowserClient } from '@/supabase/client';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -17,14 +16,21 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { app } = useFirebase();
-  const auth = getAuth(app);
+  const supabase = getSupabaseBrowserClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
       toast({
         title: "Login Successful",
         description: "You have been successfully logged in.",

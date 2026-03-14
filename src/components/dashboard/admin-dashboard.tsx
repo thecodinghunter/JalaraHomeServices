@@ -101,9 +101,9 @@ export default function AdminDashboard() {
               {jobRequests.slice(0, 5).map((request) => (
                 <TableRow key={request.id}>
                   <TableCell>
-                    <div className="font-medium">{request.customerName}</div>
+                    <div className="font-medium">{request.name}</div>
                     <div className="text-sm text-muted-foreground">
-                      {request.customerLocation}
+                      {request.customerLocation.latitude.toFixed(4)}, {request.customerLocation.longitude.toFixed(4)}
                     </div>
                   </TableCell>
                   <TableCell>{request.serviceCategory}</TableCell>

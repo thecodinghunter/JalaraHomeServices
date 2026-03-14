@@ -11,9 +11,10 @@ import {
 import { Button } from "../ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { SidebarTrigger } from "../ui/sidebar"
-import { usePathname } from "next/navigation"
-import Link from "next/link"
-import { useUser } from "@/firebase"
+import { usePathname, useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
+import { useSupabaseProfile } from "@/supabase/auth/use-profile"
+import { getSupabaseBrowserClient } from "@/supabase/client"
 
 const pathToTitle: { [key: string]: string | ((pathname: string) => string) } = {
     '/dashboard': 'Dashboard',
@@ -37,7 +38,10 @@ const pathToTitle: { [key: string]: string | ((pathname: string) => string) } = 
 
 export function DashboardHeader() {
   const pathname = usePathname();
-  const { user } = useUser();
+  const { user, profile } = useSupabaseProfile();
+  const router = useRouter();
+  const { toast } = useToast();
+  const displayName = profile?.displayName || (user?.user_metadata?.full_name as string | undefined) || 'User';
   
   let title = "Jalaram Home Service";
   for (const path in pathToTitle) {
@@ -50,6 +54,23 @@ export function DashboardHeader() {
           }
           break;
       }
+  }
+
+  const handleLogout = async () => {
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
+      router.push('/login');
+    } catch {
+      toast({
+        variant: 'destructive',
+        title: 'Logout failed',
+        description: 'Please try again.',
+      });
+    }
   }
 
 
@@ -68,17 +89,17 @@ export function DashboardHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-9 w-9 rounded-full">
               <Avatar className="h-9 w-9">
-                <AvatarImage src={user?.photoURL || "https://github.com/shadcn.png"} alt={user?.displayName || "User"} />
-                <AvatarFallback>{user?.displayName?.charAt(0) || 'U'}</AvatarFallback>
+                <AvatarImage src={user?.photoURL || "https://github.com/shadcn.png"} alt={displayName} />
+                <AvatarFallback>{displayName.charAt(0) || 'U'}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user?.displayName || 'User'}</p>
+                <p className="text-sm font-medium leading-none">{displayName}</p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  {user?.email || ''}
+                  {user?.email || profile?.email || ''}
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -86,9 +107,7 @@ export function DashboardHeader() {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <Link href="/login">
-              <DropdownMenuItem>Log out</DropdownMenuItem>
-            </Link>
+            <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -14,7 +14,7 @@ type PlaceAutocompleteProps = {
 export const PlaceAutocomplete = ({ onPlaceSelect, className, ...props }: PlaceAutocompleteProps) => {
   const places = useMapsLibrary('places');
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocomplete = useRef<google.maps.places.Autocomplete>();
+  const autocomplete = useRef<google.maps.places.Autocomplete | null>(null);
 
   useEffect(() => {
     if (!places || !inputRef.current) return;

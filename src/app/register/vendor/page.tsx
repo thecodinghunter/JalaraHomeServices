@@ -3,7 +3,7 @@
 'use client';
 
 import * as React from 'react';
-import { useForm, Controller, FieldValues } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import {
   Card,
   CardContent,
@@ -24,21 +24,12 @@ import { User, Mail, Phone, KeyRound, ArrowRight, ArrowLeft, Landmark, Banknote,
 import { serviceCategories } from '@/lib/data';
 import { APIProvider, Map, AdvancedMarker, useMap } from '@vis.gl/react-google-maps';
 import { PlaceAutocomplete } from '@/components/places-autocomplete';
-import { registerVendor } from '@/lib/actions';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-
-const steps = [
-  { id: 1, title: 'Basic Details', fields: ['fullName', 'phone', 'email', 'password'] },
-  { id: 2, title: 'Service Details', fields: ['serviceCategory', 'experience'] },
-  { id: 3, title: 'Location', fields: ['area', 'fullAddress', 'serviceRadius'] },
-  { id: 4, title: 'Pricing', fields: ['pricingType', 'basePrice'] },
-  { id: 5, title: 'KYC', fields: ['idProofType', 'idProofNumber'] },
-  { id: 6, title: 'Bank Details', fields: ['accountHolderName', 'bankName', 'accountNumber', 'ifscCode'] },
-  { id: 7, title: 'Agreement', fields: ['agreeTerms', 'allowLocation', 'confirmDetails'] },
-];
+import { getSupabaseBrowserClient } from '@/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const experienceLevels = [
     "0–1 year",
@@ -73,6 +64,7 @@ const vendorRegistrationSchema = z.object({
   visitingCharge: z.string().optional(),
   idProofType: z.string().min(1, 'ID proof type is required'),
   idProofNumber: z.string().min(1, 'ID proof number is required'),
+    idProofImageUrl: z.string().min(1, 'ID proof image is required'),
   accountHolderName: z.string().min(1, 'Account holder name is required'),
   bankName: z.string().min(1, 'Bank name is required'),
   accountNumber: z.string().min(1, 'Account number is required'),
@@ -82,13 +74,27 @@ const vendorRegistrationSchema = z.object({
   confirmDetails: z.boolean().refine(val => val === true, { message: 'You must confirm your details.' }),
 });
 
+type VendorRegistrationFormData = z.infer<typeof vendorRegistrationSchema>;
+
+const steps: Array<{ id: number; title: string; fields: Array<keyof VendorRegistrationFormData> }> = [
+    { id: 1, title: 'Basic Details', fields: ['fullName', 'phone', 'email', 'password'] },
+    { id: 2, title: 'Service Details', fields: ['serviceCategory', 'experience'] },
+    { id: 3, title: 'Location', fields: ['area', 'fullAddress', 'serviceRadius'] },
+    { id: 4, title: 'Pricing', fields: ['pricingType', 'basePrice'] },
+    { id: 5, title: 'KYC', fields: ['idProofType', 'idProofNumber', 'idProofImageUrl'] },
+    { id: 6, title: 'Bank Details', fields: ['accountHolderName', 'bankName', 'accountNumber', 'ifscCode'] },
+    { id: 7, title: 'Agreement', fields: ['agreeTerms', 'allowLocation', 'confirmDetails'] },
+];
+
 
 function VendorRegistrationForm() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const [serverError, setServerError] = React.useState<{ message: string | null; errors?: any }>({ message: null });
+    const [uploadingId, setUploadingId] = React.useState(false);
   const router = useRouter();
+    const { toast } = useToast();
 
-  const { control, watch, setValue, handleSubmit, trigger, formState: { errors, isSubmitting } } = useForm({
+    const { control, watch, setValue, handleSubmit, trigger, formState: { errors, isSubmitting } } = useForm<VendorRegistrationFormData>({
     resolver: zodResolver(vendorRegistrationSchema),
     defaultValues: {
       fullName: '',
@@ -108,6 +114,7 @@ function VendorRegistrationForm() {
       visitingCharge: '',
       idProofType: '',
       idProofNumber: '',
+    idProofImageUrl: '',
       accountHolderName: '',
       bankName: '',
       accountNumber: '',
@@ -145,21 +152,108 @@ function VendorRegistrationForm() {
     }
   };
 
-  const totalSteps = steps.length;
+    const totalSteps = steps.length;
   const progress = (currentStep / totalSteps) * 100;
+
+    const handleIdProofUpload = async (file: File | null) => {
+        if (!file) return;
+
+        setUploadingId(true);
+        setServerError({ message: null, errors: {} });
+
+        try {
+            const supabase = getSupabaseBrowserClient();
+            const extension = file.name.split('.').pop() || 'jpg';
+            const filePath = `vendor-id-proofs/${crypto.randomUUID()}.${extension}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('vendor-kyc')
+                .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+            if (uploadError) throw uploadError;
+
+            const { data } = supabase.storage.from('vendor-kyc').getPublicUrl(filePath);
+            setValue('idProofImageUrl', data.publicUrl, { shouldValidate: true });
+        } catch (error: any) {
+            setServerError({
+                message: error.message || 'Failed to upload ID proof image.',
+            });
+        } finally {
+            setUploadingId(false);
+        }
+    };
   
-  const onFormSubmit = async (data: FieldValues) => {
+    const onFormSubmit = async (data: VendorRegistrationFormData) => {
     setServerError({ message: null, errors: {} });
-    const result = await registerVendor(null, data);
-    if (result?.errors || result?.message) {
-      setServerError({ message: result.message, errors: result.errors });
-    } else {
-        router.push('/');
-    }
+
+        try {
+            const supabase = getSupabaseBrowserClient();
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                email: data.email,
+                password: data.password,
+                options: {
+                    data: {
+                        full_name: data.fullName,
+                        phone: data.phone,
+                        role: 'vendor',
+                    },
+                },
+            });
+
+            if (signUpError) throw signUpError;
+            if (!signUpData.user) throw new Error('Could not create vendor account.');
+
+            const uid = signUpData.user.id;
+            const selectedSubCategories = Object.keys(data.subCategories || {}).filter((key) => data.subCategories?.[key]);
+
+            const { error: profileError } = await supabase.from('profiles').upsert({
+                uid,
+                email: data.email,
+                display_name: data.fullName,
+                phone_number: data.phone,
+                role: 'vendor',
+            });
+
+            if (profileError) throw profileError;
+
+            const { error: vendorError } = await supabase.from('vendor_profiles').upsert({
+                uid,
+                service_category: data.serviceCategory,
+                sub_categories: selectedSubCategories,
+                experience: data.experience,
+                area: data.area,
+                full_address: data.fullAddress,
+                latitude: data.latitude,
+                longitude: data.longitude,
+                service_radius_km: data.serviceRadius[0] || 10,
+                pricing_type: data.pricingType,
+                base_price: Number(data.basePrice),
+                visiting_charge: data.visitingCharge ? Number(data.visitingCharge) : null,
+                id_proof_type: data.idProofType,
+                id_proof_number: data.idProofNumber,
+                id_proof_image_url: data.idProofImageUrl,
+                account_holder_name: data.accountHolderName,
+                bank_name: data.bankName,
+                account_number: data.accountNumber,
+                ifsc_code: data.ifscCode,
+                status: 'pending',
+            });
+
+            if (vendorError) throw vendorError;
+
+            toast({
+                title: 'Registration submitted',
+                description: 'Vendor account created. Please verify your email to continue.',
+            });
+
+            router.push('/verify-email');
+        } catch (error: any) {
+            setServerError({ message: error.message || 'Vendor registration failed.' });
+        }
   };
 
   const handleNext = async () => {
-    const fields = steps[currentStep - 1].fields as (keyof FieldValues)[];
+        const fields = steps[currentStep - 1].fields;
     const isValid = await trigger(fields);
     if (isValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
@@ -173,7 +267,7 @@ function VendorRegistrationForm() {
   };
   
   // Combine local and server errors
-  const formErrors: FieldValues = { ...errors, ...serverError?.errors };
+    const formErrors = { ...errors, ...(serverError?.errors || {}) };
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="w-full max-w-2xl">
@@ -278,28 +372,32 @@ function VendorRegistrationForm() {
                          <Controller
                             name="subCategories"
                             control={control}
-                            render={({ field }) => (
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 rounded-lg border p-4 max-h-48 overflow-y-auto">
-                                    {subCategories.map(sub => (
-                                        <div key={sub.id} className="flex items-center gap-2">
-                                            <Checkbox 
-                                                id={`sub-${sub.id}`} 
-                                                checked={field.value ? field.value[sub.id] || false : false}
-                                                onCheckedChange={(checked) => {
-                                                    const newValue = {...field.value};
-                                                    if (checked) {
-                                                        newValue[sub.id] = true;
-                                                    } else {
-                                                        delete newValue[sub.id];
-                                                    }
-                                                    field.onChange(newValue);
-                                                }}
-                                            />
-                                            <Label htmlFor={`sub-${sub.id}`} className="font-normal cursor-pointer">{sub.name}</Label>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                            render={({ field }) => {
+                                const selectedValues = (field.value || {}) as Record<string, boolean>;
+
+                                return (
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 rounded-lg border p-4 max-h-48 overflow-y-auto">
+                                        {subCategories.map(sub => (
+                                            <div key={sub.id} className="flex items-center gap-2">
+                                                <Checkbox 
+                                                    id={`sub-${sub.id}`} 
+                                                    checked={Boolean(selectedValues[sub.id])}
+                                                    onCheckedChange={(checked) => {
+                                                        const newValue: Record<string, boolean> = { ...selectedValues };
+                                                        if (checked) {
+                                                            newValue[sub.id] = true;
+                                                        } else {
+                                                            delete newValue[sub.id];
+                                                        }
+                                                        field.onChange(newValue);
+                                                    }}
+                                                />
+                                                <Label htmlFor={`sub-${sub.id}`} className="font-normal cursor-pointer">{sub.name}</Label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )
+                            }}
                         />
                     </div>
                 )}
@@ -483,6 +581,19 @@ function VendorRegistrationForm() {
                     />
                     {formErrors.idProofNumber && <p className="text-sm font-medium text-destructive">{formErrors.idProofNumber.message}</p>}
                 </div>
+                                <div className="space-y-2">
+                                        <Label htmlFor="id-proof-image">Upload ID Proof Image</Label>
+                                        <Input
+                                            id="id-proof-image"
+                                            type="file"
+                                            accept="image/*,.pdf"
+                                            onChange={(e) => handleIdProofUpload(e.target.files?.[0] || null)}
+                                            disabled={uploadingId}
+                                        />
+                                        {uploadingId && <p className="text-xs text-muted-foreground">Uploading ID proof...</p>}
+                                        {!uploadingId && watch('idProofImageUrl') && <p className="text-xs text-green-600">ID proof uploaded successfully.</p>}
+                                        {formErrors.idProofImageUrl && <p className="text-sm font-medium text-destructive">{formErrors.idProofImageUrl.message}</p>}
+                                </div>
             </div>
           )}
 

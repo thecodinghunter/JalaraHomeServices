@@ -21,6 +21,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useState } from 'react';
+import { getSupabaseBrowserClient } from '@/supabase/client';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -46,8 +48,43 @@ function ServiceDetailsContent() {
   const serviceCategory = searchParams.get('categoryName');
   const location = searchParams.get('location');
 
-  const initialState = { message: null, errors: {} };
+  const initialState = { message: '', errors: {} as Record<string, string[]> };
   const [state, dispatch] = useActionState(findVendor, initialState);
+  const hasErrors = Boolean(state?.errors && Object.keys(state.errors).length > 0);
+  const [issueImageUrl, setIssueImageUrl] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  const handleIssueImageUpload = async (file: File | null) => {
+    if (!file) return;
+
+    setUploadingImage(true);
+    setUploadError('');
+
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const ext = file.name.split('.').pop() || 'jpg';
+      const fileName = `${crypto.randomUUID()}.${ext}`;
+      const filePath = `issues/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('issue-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('issue-images').getPublicUrl(filePath);
+      setIssueImageUrl(data.publicUrl);
+    } catch (error: any) {
+      setUploadError(error.message || 'Image upload failed. Please try again.');
+      setIssueImageUrl('');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const backLink = `/request-service/location?${searchParams.toString()}`;
 
@@ -95,6 +132,7 @@ function ServiceDetailsContent() {
             <input type="hidden" name="serviceSubCategory" value={decodeURIComponent(serviceSubCategory)} />
             <input type="hidden" name="serviceCategory" value={decodeURIComponent(serviceCategory)} />
             <input type="hidden" name="customerLocation" value={location} />
+            <input type="hidden" name="issueImageUrl" value={issueImageUrl} />
 
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -166,13 +204,27 @@ function ServiceDetailsContent() {
                 </p>
               )}
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="issueImage">Issue Photo (Optional)</Label>
+              <Input
+                id="issueImage"
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleIssueImageUpload(e.target.files?.[0] || null)}
+                disabled={uploadingImage}
+              />
+              {uploadingImage && <p className="text-xs text-muted-foreground">Uploading image...</p>}
+              {issueImageUrl && <p className="text-xs text-green-600">Image uploaded successfully.</p>}
+              {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
+            </div>
           </CardContent>
           <CardFooter className="flex-col items-stretch gap-4">
             <SubmitButton />
             {state?.message && (
-                <Alert variant={state.errors ? 'destructive' : 'default'}>
+              <Alert variant={hasErrors ? 'destructive' : 'default'}>
                     <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>{state.errors ? 'Error' : 'Status'}</AlertTitle>
+                <AlertTitle>{hasErrors ? 'Error' : 'Status'}</AlertTitle>
                     <AlertDescription>{state.message}</AlertDescription>
                 </Alert>
             )}

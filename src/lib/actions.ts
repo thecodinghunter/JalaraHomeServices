@@ -7,10 +7,7 @@ import { recommendVendor } from "@/ai/flows/vendor-recommendation";
 import { vendors as allVendors } from "@/lib/data";
 import { revalidatePath } from "next/cache";
 import { redirect } from 'next/navigation';
-import { getApp } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
-import { getFirestore } from "firebase-admin/firestore";
-import { initFirebaseAdmin } from "./firebase-admin";
+import { getSupabaseServerClient } from "@/supabase/server";
 
 const requestServiceSchema = z.object({
   serviceSubCategory: z.string().min(1, "Service sub-category is required."),
@@ -25,6 +22,7 @@ const requestServiceSchema = z.object({
   state: z.string().min(1, "State is required."),
   landmark: z.string().optional(),
   alternatePhone: z.string().optional(),
+  issueImageUrl: z.string().url().optional().or(z.literal('')),
   issueDescription: z.string().min(10, "Please describe the issue in more detail."),
 });
 
@@ -40,7 +38,7 @@ export async function findVendor(prevState: any, formData: FormData) {
     };
   }
   
-  const { serviceSubCategory, customerLocation, address, city, locality, name, pincode, state, landmark, issueDescription } = validatedFields.data;
+  const { serviceSubCategory, serviceCategory, customerLocation, address, city, locality, name, phone, pincode, state, landmark, alternatePhone, issueDescription, issueImageUrl } = validatedFields.data;
   
   const detailedAddress = `${name}, ${address}, ${locality}, ${city}, ${state} - ${pincode}. Landmark: ${landmark || 'N/A'}`;
   const jobDescription = `Address: ${detailedAddress}. Issue: ${issueDescription}`;
@@ -65,9 +63,30 @@ export async function findVendor(prevState: any, formData: FormData) {
     
     const recommendedVendorDetails = allVendors.find(v => v.id === result.recommendedVendorId);
     
-    // Here you would save the job request to the database
-    console.log("Found vendor:", recommendedVendorDetails);
-    console.log("Job Details:", { ...validatedFields.data });
+    const supabase = getSupabaseServerClient();
+
+    const { error: insertError } = await supabase.from('job_requests').insert({
+      customer_name: name,
+      customer_phone: phone,
+      alternate_phone: alternatePhone || null,
+      service_category: serviceCategory,
+      service_sub_category: serviceSubCategory,
+      customer_location: customerLocation,
+      pincode,
+      locality,
+      address,
+      city,
+      state,
+      landmark: landmark || null,
+      issue_description: issueDescription,
+      issue_image_url: issueImageUrl || null,
+      status: 'assigned',
+      assigned_vendor_id: recommendedVendorDetails?.id || null,
+    });
+
+    if (insertError) {
+      throw insertError;
+    }
 
 
   } catch (error) {
@@ -79,88 +98,4 @@ export async function findVendor(prevState: any, formData: FormData) {
 
   revalidatePath('/my-requests');
   redirect('/my-requests');
-}
-
-
-const vendorRegistrationSchema = z.object({
-  fullName: z.string().min(1, 'Full name is required'),
-  phone: z.string().min(10, 'A valid phone number is required'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  serviceCategory: z.string().min(1, 'Service category is required'),
-  subCategories: z.record(z.boolean()).optional(),
-  experience: z.string().min(1, 'Experience is required'),
-  area: z.string().min(1, 'Area is required'),
-  fullAddress: z.string().min(10, 'Full address is required'),
-  latitude: z.number(),
-  longitude: z.number(),
-  serviceRadius: z.array(z.number()),
-  pricingType: z.enum(['fixed', 'hourly']),
-  basePrice: z.string().min(1, 'Base price is required'),
-  visitingCharge: z.string().optional(),
-  idProofType: z.string().min(1, 'ID proof type is required'),
-  idProofNumber: z.string().min(1, 'ID proof number is required'),
-  accountHolderName: z.string().min(1, 'Account holder name is required'),
-  bankName: z.string().min(1, 'Bank name is required'),
-  accountNumber: z.string().min(1, 'Account number is required'),
-  ifscCode: z.string().min(1, 'IFSC code is required'),
-  agreeTerms: z.boolean().refine(val => val === true, { message: 'You must agree to the terms.' }),
-  allowLocation: z.boolean().refine(val => val === true, { message: 'You must allow location access.' }),
-  confirmDetails: z.boolean().refine(val => val === true, { message: 'You must confirm your details.' }),
-});
-
-
-export async function registerVendor(data: unknown) {
-  
-  const validatedFields = vendorRegistrationSchema.safeParse(data);
-
-  if (!validatedFields.success) {
-    return {
-      message: "Invalid form data. Please check all fields.",
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-
-  const { email, password, fullName, phone, subCategories, ...vendorProfileData } = validatedFields.data;
-
-  try {
-    await initFirebaseAdmin();
-    const auth = getAuth(getApp());
-    const firestore = getFirestore(getApp());
-
-    const userRecord = await auth.createUser({
-      email,
-      password,
-      displayName: fullName,
-      phoneNumber: phone,
-      emailVerified: false,
-    });
-
-    const processedSubCategories = subCategories ? Object.keys(subCategories).filter(key => subCategories[key]) : [];
-
-    const vendorProfile = {
-      uid: userRecord.uid,
-      email: email,
-      displayName: fullName,
-      phoneNumber: phone,
-      role: 'vendor',
-      status: 'pending', // 'pending', 'approved', 'suspended'
-      ...vendorProfileData,
-      subCategories: processedSubCategories,
-    };
-
-    await firestore.collection('users').doc(userRecord.uid).set(vendorProfile);
-
-  } catch (error: any) {
-    console.error("Vendor Registration Error:", error);
-    let message = "An unexpected error occurred during registration.";
-    if (error.code === 'auth/email-already-exists') {
-        message = "This email is already registered. Please use a different email.";
-    }
-    return {
-      message,
-    };
-  }
-  
-  redirect('/');
 }

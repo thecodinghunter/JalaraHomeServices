@@ -8,11 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Mail, KeyRound, Phone, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { useFirebase } from '@/firebase';
-import { doc, setDoc } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
+import { getSupabaseBrowserClient } from '@/supabase/client';
 
 export default function RegisterForm() {
   const [email, setEmail] = useState('');
@@ -22,43 +18,48 @@ export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { app, firestore } = useFirebase();
-  const auth = getAuth(app);
+  const supabase = getSupabaseBrowserClient();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      // Create user profile in Firestore
-      const userProfile = {
-        uid: user.uid,
-        email: user.email,
-        displayName: name,
-        phoneNumber: phoneNumber,
-        role: 'customer', // Default role
-      };
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/verify-email`,
+          data: {
+            full_name: name,
+            phone: phoneNumber,
+            role: 'customer',
+          },
+        },
+      });
 
-      const userDocRef = doc(firestore, "users", user.uid);
-      setDoc(userDocRef, userProfile, { merge: true }).catch(async (serverError) => {
-          const permissionError = new FirestorePermissionError({
-            path: userDocRef.path,
-            operation: 'create',
-            requestResourceData: userProfile,
-          });
-          errorEmitter.emit('permission-error', permissionError);
+      if (error) {
+        throw error;
+      }
+
+      if (data.user) {
+        const { error: profileError } = await supabase.from('profiles').upsert({
+          uid: data.user.id,
+          email,
+          display_name: name,
+          phone_number: phoneNumber || null,
+          role: 'customer',
+        });
+
+        if (profileError) {
+          throw profileError;
         }
-      );
-
-      await sendEmailVerification(user);
+      }
       
       toast({
         title: "Registration Successful",
         description: "A verification email has been sent. Please check your inbox.",
       });
-      router.push('/');
+      router.push('/verify-email');
     } catch (error: any) {
       toast({
         variant: "destructive",

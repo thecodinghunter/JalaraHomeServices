@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   SidebarContent,
@@ -26,27 +26,24 @@ import {
   User,
   Megaphone,
 } from "lucide-react";
-import { useUser, useDoc, useFirestore } from "@/firebase";
-import { doc } from "firebase/firestore";
 import type { UserProfile } from "@/lib/types";
 import Image from "next/image";
+import { useToast } from "@/hooks/use-toast";
+import { useSupabaseProfile } from "@/supabase/auth/use-profile";
+import { getSupabaseBrowserClient } from "@/supabase/client";
 
-const useUserRole = () => {
-  const { user, loading: userLoading } = useUser();
-  const firestore = useFirestore();
+const useUserProfileMeta = (): { role: UserProfile['role'] | 'loading'; displayName: string | null; photoURL: string | null } => {
+  const { profile, loading, user } = useSupabaseProfile();
 
-  const userProfileRef = useMemo(() => {
-    if (!user) return null;
-    return doc(firestore, 'users', user.uid);
-  }, [user, firestore]);
-
-  const { data: userProfile, loading: profileLoading } = useDoc<UserProfile>(userProfileRef);
-
-  if (userLoading || profileLoading) {
-    return 'loading';
+  if (loading) {
+    return { role: 'loading', displayName: null, photoURL: null };
   }
-  
-  return userProfile?.role || 'customer';
+
+  return {
+    role: profile?.role || 'customer',
+    displayName: profile?.displayName || (user?.user_metadata?.full_name as string | undefined) || null,
+    photoURL: (user?.user_metadata?.avatar_url as string | undefined) || null,
+  };
 };
 
 
@@ -80,8 +77,26 @@ const navItems = {
 
 export function DashboardSidebar() {
   const pathname = usePathname();
-  const role = useUserRole();
-  const { user } = useUser();
+  const { role, displayName, photoURL } = useUserProfileMeta();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
+      router.push('/login');
+    } catch {
+      toast({
+        variant: 'destructive',
+        title: 'Logout failed',
+        description: 'Please try again.',
+      });
+    }
+  };
 
   return (
     <>
@@ -112,18 +127,16 @@ export function DashboardSidebar() {
       <SidebarFooter>
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src={user?.photoURL || "https://github.com/shadcn.png"} alt={user?.displayName || "User"} />
-            <AvatarFallback>{user?.displayName?.charAt(0) || 'U'}</AvatarFallback>
+            <AvatarImage src={photoURL || "https://github.com/shadcn.png"} alt={displayName || "User"} />
+            <AvatarFallback>{displayName?.charAt(0) || 'U'}</AvatarFallback>
           </Avatar>
           <div className="flex-1 overflow-hidden group-data-[collapsible=icon]:hidden">
-            <p className="font-semibold text-sm truncate">{user?.displayName || 'User'}</p>
+            <p className="font-semibold text-sm truncate">{displayName || 'User'}</p>
             <p className="text-xs text-muted-foreground truncate">{role}</p>
           </div>
-          <Link href="/login">
-            <Button variant="ghost" size="icon" aria-label="Log out">
-              <LogOut />
-            </Button>
-          </Link>
+          <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
+            <LogOut />
+          </Button>
         </div>
       </SidebarFooter>
     </>

@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation';
 import LoginForm from '@/components/auth/login-form';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useUser } from '@/firebase';
+import { useSupabaseUser } from '@/supabase/auth/use-user';
 import Image from 'next/image';
 
 export default function LoginPage() {
-  const { user, loading } = useUser();
+  const { user, loading } = useSupabaseUser();
   const router = useRouter();
 
   useEffect(() => {

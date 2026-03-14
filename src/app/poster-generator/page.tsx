@@ -25,9 +25,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import { useUser, useDoc, useFirestore } from '@/firebase';
-import { doc } from 'firebase/firestore';
-import type { UserProfile } from '@/lib/types';
+import { useSupabaseProfile } from '@/supabase/auth/use-profile';
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Download, Wrench, Phone, CheckCircle } from 'lucide-react';
 import { AppFooter } from '@/components/layout/footer';
@@ -209,10 +207,7 @@ export default function PublicPosterGeneratorPage() {
     const serviceList = useMemo(() => services.split('\n').filter(s => s.trim() !== ''), [services]);
     const posterProps = { name, phone, category, services: serviceList, image: uploadedImage };
 
-    const { user, loading: userLoading } = useUser();
-    const firestore = useFirestore();
-    const userProfileRef = useMemo(() => user ? doc(firestore, 'users', user.uid) : null, [user, firestore]);
-    const { data: userProfile, loading: profileLoading } = useDoc<UserProfile>(userProfileRef);
+    const { user, profile: userProfile } = useSupabaseProfile();
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

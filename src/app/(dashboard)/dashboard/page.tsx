@@ -1,35 +1,23 @@
 'use client';
 
-import { useUser, useDoc, useFirestore } from '@/firebase';
-import { doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import type { UserProfile } from '@/lib/types';
 import AdminDashboard from '@/components/dashboard/admin-dashboard';
 import VendorDashboard from '@/components/dashboard/vendor-dashboard';
 import CustomerDashboard from '@/components/dashboard/customer-dashboard';
+import { useSupabaseProfile } from '@/supabase/auth/use-profile';
 
 export default function DashboardRedirectPage() {
-  const { user, loading: userLoading } = useUser();
+  const { user, profile, loading } = useSupabaseProfile();
   const router = useRouter();
-  const firestore = useFirestore();
-
-  const userProfileRef = useMemo(() => {
-    if (!user) return null;
-    return doc(firestore, 'users', user.uid);
-  }, [user, firestore]);
-
-  const { data: userProfile, loading: profileLoading } = useDoc<UserProfile>(userProfileRef);
 
   useEffect(() => {
-    if (!userLoading && !user) {
+    if (!loading && !user) {
       // If not loading and no user, redirect to login
       router.push('/login');
     }
-  }, [user, userLoading, router]);
-
-  const loading = userLoading || profileLoading;
+  }, [user, loading, router]);
 
   if (loading) {
     return (
@@ -40,8 +28,8 @@ export default function DashboardRedirectPage() {
     );
   }
 
-  if (userProfile) {
-    switch (userProfile.role) {
+  if (profile) {
+    switch (profile.role) {
       case 'admin':
         return <AdminDashboard />;
       case 'vendor':

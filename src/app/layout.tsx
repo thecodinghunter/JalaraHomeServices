@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { FirebaseClientProvider } from "@/firebase";
 import { WhatsAppPopup } from "@/components/layout/whatsapp-popup";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -26,9 +25,7 @@ export default function RootLayout({
         <script src="https://analytics.ahrefs.com/analytics.js" data-key="VdwPa6RxZqKULtHYafM+Nw" async></script>
       </head>
       <body className="font-body antialiased">
-        <FirebaseClientProvider>
-          {children}
-        </FirebaseClientProvider>
+        {children}
         <Toaster />
         <WhatsAppPopup />
       </body>
