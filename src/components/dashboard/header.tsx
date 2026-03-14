@@ -42,6 +42,7 @@ export function DashboardHeader() {
   const router = useRouter();
   const { toast } = useToast();
   const displayName = profile?.displayName || (user?.user_metadata?.full_name as string | undefined) || 'User';
+  const photoURL = (user?.user_metadata?.avatar_url as string | undefined) || "https://github.com/shadcn.png";
   
   let title = "Jalaram Home Service";
   for (const path in pathToTitle) {
@@ -89,7 +90,7 @@ export function DashboardHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-9 w-9 rounded-full">
               <Avatar className="h-9 w-9">
-                <AvatarImage src={user?.photoURL || "https://github.com/shadcn.png"} alt={displayName} />
+                <AvatarImage src={photoURL} alt={displayName} />
                 <AvatarFallback>{displayName.charAt(0) || 'U'}</AvatarFallback>
               </Avatar>
             </Button>
